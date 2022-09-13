@@ -1,0 +1,84 @@
+scalar Date
+directive @isAuthenticated on FIELD_DEFINITION
+directive @hasRole(roles: [String]) on FIELD_DEFINITION
+directive @isOwner(type: String) on FIELD_DEFINITION
+directive @rateLimit(
+  max: Int
+  window: String
+  message: String
+  identityArgs: [String]
+  arrayLengthField: String
+) on FIELD_DEFINITION
+
+
+type Mutation {
+  createEducation(data: EducationInput!): CreateUpdateEducationResponse @isAuthenticated
+  updateEducation(data: EducationUpdateData!): CreateUpdateEducationResponse @isAuthenticated
+  deleteEducation(data: EducationDeleteData!): CreateUpdateEducationResponse @isAuthenticated
+  getEducationDetailByUserId(data: EducationByIDData!): [EducationListing] @isAuthenticated
+  updateMultipleEducation(data: MultipleEducationUpdateInputs): CreateUpdateEducationResponse @isAuthenticated
+}
+
+type Education {
+  user_education_id: String!
+  user_id: String!
+  education_center_name: String!
+  course: String!
+  degree: String!
+  joining_date: Date!
+  leaving_date: Date
+}
+
+type EducationListing {
+  user_education_id: String!
+  user_id: String!
+  education_center_name: String!
+  course: String!
+  degree: String!
+  joining_date: Date!
+  leaving_date: Date
+}
+
+type CreateUpdateEducationResponse {
+  message: String
+}
+
+input MultipleEducationInputObject {
+  user_education_id: String
+  education_center_name: String!
+  course: String!
+  degree: String!
+  joining_date: Date
+  leaving_date: Date
+}
+
+input MultipleEducationUpdateInputs {
+  user_id: String
+  educations: [MultipleEducationInputObject]
+}
+
+input EducationInput {
+  user_id: String!
+  education_center_name: String!
+  course: String!
+  degree: String!
+  joining_date: Date!
+  leaving_date: Date
+}
+
+input EducationUpdateData {
+  user_education_id: String
+  education_center_name: String!
+  course: String!
+  degree: String!
+  joining_date: Date!
+  leaving_date: Date
+}
+
+input EducationDeleteData {
+  user_education_id: String
+}
+
+input EducationByIDData {
+  user_id: String!
+}

@@ -1,0 +1,84 @@
+scalar Date
+directive @isAuthenticated on FIELD_DEFINITION
+directive @hasRole(roles: [String]) on FIELD_DEFINITION
+directive @isOwner(type: String) on FIELD_DEFINITION
+directive @rateLimit(
+  max: Int
+  window: String
+  message: String
+  identityArgs: [String]
+  arrayLengthField: String
+) on FIELD_DEFINITION
+
+
+type Mutation {
+  createExperience(data: ExperienceInput!): CreateUpdateExperienceResponse @isAuthenticated
+  updateExperience(data: ExperienceUpdateData!): CreateUpdateExperienceResponse @isAuthenticated
+  deleteExperience(data: ExperienceDeleteData!): CreateUpdateExperienceResponse @isAuthenticated
+  getExperienceDetailByUserId(data: ExperienceByIDData!): [ExperienceListing] @isAuthenticated
+  updateMultipleExperience(data: MultipleUpdateExperienceInput): CreateUpdateExperienceResponse @isAuthenticated
+}
+
+type Experience {
+  user_experience_id: String!
+  user_id: String!
+  organization_name: String!
+  designation: String!
+  joining_date: Date!
+  leaving_date: Date
+  location: String
+}
+
+type ExperienceListing {
+  user_experience_id: String!
+  user_id: String!
+  organization_name: String!
+  designation: String!
+  joining_date: Date!
+  leaving_date: Date
+  location: String
+}
+
+type CreateUpdateExperienceResponse {
+  message: String
+}
+
+input MultipleInputExperienceObject {
+  user_experience_id:String
+  designation: String
+  organization_name: String
+  joining_date: Date
+  leaving_date: Date
+  location: String
+}
+
+input MultipleUpdateExperienceInput {
+  user_id: String
+  experiences: [MultipleInputExperienceObject]
+}
+
+input ExperienceInput {
+  user_id: String!
+  organization_name: String!
+  designation: String
+  joining_date: Date!
+  leaving_date: Date
+  location: String
+}
+
+input ExperienceUpdateData {
+  user_experience_id: String!
+  organization_name: String!
+  designation: String
+  joining_date: Date!
+  leaving_date: Date
+  location: String
+}
+
+input ExperienceDeleteData {
+  user_experience_id: String!
+}
+
+input ExperienceByIDData {
+  user_id: String!
+}

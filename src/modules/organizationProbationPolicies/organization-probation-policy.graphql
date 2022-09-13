@@ -1,0 +1,76 @@
+scalar Date
+directive @isAuthenticated on FIELD_DEFINITION
+directive @hasRole(roles: [String]) on FIELD_DEFINITION
+directive @isOwner(type: String) on FIELD_DEFINITION
+directive @rateLimit(
+  max: Int
+  window: String
+  message: String
+  identityArgs: [String]
+  arrayLengthField: String
+) on FIELD_DEFINITION
+
+
+type Mutation {
+  createOrganizationProbationPolicy(data: OrganizationProbationPolicyInput!): CreateUpdateOrganizationProbationPolicyResponse @isAuthenticated
+  deleteOrganizationProbationPolicy(data: OrganizationProbationPolicyDeleteData!): CreateUpdateOrganizationProbationPolicyResponse @isAuthenticated
+  getOrganizationProbationPolicyByOrganizationId(data: OrganizationProbationPolicyByIDData!): [OrganizationProbationPolicy] @isAuthenticated
+  updateEmployeeProbationStatus(data: UpdateEmployeeProbationStatusInput!): CreateUpdateOrganizationProbationPolicyResponse @isAuthenticated
+  editOrganizationProbationPolicy(data: EditOrganizationProbationInput!): CreateUpdateOrganizationProbationPolicyResponse @isAuthenticated
+}
+
+type OrganizationProbationPolicy {
+  organization_probation_policy_id :String
+  organization_id: String
+  probation_policy_name: String
+  probation_period_duration: Float
+  probation_type: String
+  allow_to_change_emp_status: Boolean
+  end_emp_probation_automatic: Boolean
+  complete_feedback_before_day: Int
+  end_probation_days_before: Int
+  who_give_feedback: String
+}
+
+type OrganizationProbationPolicyListing {
+  organization_probation_policy_id :String
+  organization_id: String
+  probation_policy_name: String
+  probation_period_duration: Float
+  probation_type: String
+}
+
+type CreateUpdateOrganizationProbationPolicyResponse {
+  message: String
+}
+
+input OrganizationProbationPolicyInput {
+  organization_id: String
+  probation_policy_name: String
+  probation_period_duration: Float
+  probation_type: String
+}
+
+input OrganizationProbationPolicyDeleteData {
+  organization_probation_policy_id: String!
+}
+
+input OrganizationProbationPolicyByIDData {
+  organization_id: String!
+}
+
+input UpdateEmployeeProbationStatusInput {
+  probation_end_date: Date
+  probation_status: Date
+  performance_feedback: Date
+  employee_id: String
+}
+
+input EditOrganizationProbationInput {
+  organization_probation_policy_id :String!
+  allow_to_change_emp_status: Boolean
+  end_emp_probation_automatic: Boolean
+  complete_feedback_before_day: Int
+  end_probation_days_before: Int
+  who_give_feedback: String
+}

@@ -1,0 +1,65 @@
+scalar Date
+directive @isAuthenticated on FIELD_DEFINITION
+directive @hasRole(roles: [String]) on FIELD_DEFINITION
+directive @isOwner(type: String) on FIELD_DEFINITION
+directive @rateLimit(
+  max: Int
+  window: String
+  message: String
+  identityArgs: [String]
+  arrayLengthField: String
+) on FIELD_DEFINITION
+
+type Query {
+  tasks(filter: TaskFilter!): TaskResponse  @isAuthenticated
+}
+
+type Mutation {
+  createTask(data: TaskInput!): CreateUpdateTaskResponse @isAuthenticated
+  updateTask(data: TaskUpdateData!): CreateUpdateTaskResponse @isAuthenticated
+  deleteTask(data: TaskDeleteData!): CreateUpdateTaskResponse @isAuthenticated
+}
+
+type Task {
+  id: ID!
+  title: String
+  description: String
+}
+
+type TaskListing {
+  id: ID!
+  title: String
+  description: String
+}
+
+type CreateUpdateTaskResponse {
+  message: String
+}
+
+type TaskResponse {
+  count: Int
+  users: [TaskListing]
+}
+
+
+input TaskInput {
+  title: String
+  description: String
+}
+
+input TaskFilter {
+  skip: Int
+  limit: Int
+  search: String
+  sortBy: String
+}
+
+input TaskUpdateData {
+  id: Int!
+  title: String!
+  description: String!
+}
+
+input TaskDeleteData {
+  id: Int!
+}

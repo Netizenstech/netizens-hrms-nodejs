@@ -1,0 +1,210 @@
+scalar Date
+directive @isAuthenticated on FIELD_DEFINITION
+directive @hasRole(roles: [String]) on FIELD_DEFINITION
+directive @isOwner(type: String) on FIELD_DEFINITION
+directive @rateLimit(
+  max: Int
+  window: String
+  message: String
+  identityArgs: [String]
+  arrayLengthField: String
+) on FIELD_DEFINITION
+
+
+type Mutation {
+  createOrganizationLocation(data: OrganizationLocationInput!): CreateUpdateOrganizationLocationResponse @isAuthenticated
+  deleteOrganizationLocation(data: OrganizationLocationDeleteData!): CreateUpdateOrganizationLocationResponse @isAuthenticated
+  getOrganizationLocationByOrganizationId(data: OrganizationLocationByIDData!): [OrganizationLocationResponse] @isAuthenticated
+  updateOrganizationLocation(data: OrganizationLocationUpdateInput!): CreateUpdateOrganizationLocationResponse @isAuthenticated
+  createUpdateOrganizationLocationHead(data: OrganizationLocationHeadAddUpdateInput!): CreateUpdateOrganizationLocationResponse @isAuthenticated
+  createOrganizationLocationHead(data: OrganizationLocationHeadCreateInput!): CreateUpdateOrganizationLocationResponse @isAuthenticated
+  deleteOrganizationLocationHead(data: OrganizationLocationHeadDeleteInput!): CreateUpdateOrganizationLocationResponse @isAuthenticated
+  updateEmployeeLocation(data: UpdateMultipleEmployeeLocationInput!): UpdateMultipleEmployeeLocationResponse @isAuthenticated
+  uploadSample(data: OrganizationLocationInput!): CreateUpdateOrganizationLocationResponse @isAuthenticated
+  getCountry(data: getCountryInput!): [CountryResponse] @isAuthenticated
+  getStateByCountryIdWise(data: getStateAndTimeZoneInput!): [StateResponse] @isAuthenticated
+  getCountryTimeZoneByCountryId(data: getStateAndTimeZoneInput!): [TimezoneResponse] @isAuthenticated
+  uploadLocations(data: UploadLocationsInput): CreateUpdateOrganizationLocationResponse @isAuthenticated
+}
+
+type OrganizationLocation {
+  organization_location_id: String
+  organization_id: String
+  organization_location: String
+  time_zone: String
+  country: String
+  state: String
+  address_line_1: String
+  address_line_2: String
+  city: String
+  zip: String
+  description: String
+  email: String
+}
+
+type OrganizationLocationListing {
+  organization_location_id: String
+  organization_id: String
+  organization_location: String
+  time_zone: String
+  country: String
+  state: String
+  address_line_1: String
+  address_line_2: String
+  city: String
+  zip: String
+  description: String
+}
+
+type CreateUpdateOrganizationLocationResponse {
+  message: String
+}
+
+type OrganizationLocationResponse {
+  organization_location_id: String
+  organization_id: String
+  organization_location: String
+  time_zone: String
+  country: String
+  state: String
+  address_line_1: String
+  address_line_2: String
+  city: String
+  zip: String
+  description: String
+  email: String
+  OrganizationLocationHeads: [OrganizationLocationHeadsResponse]
+  Country: CountryResponse
+  CountryTimeZone: TimezoneResponse
+  State: StateResponse
+}
+
+type userDataResponse {
+  firstName: String
+  lastName: String
+}
+
+type OrganizationLocationHeadsResponse {
+  organization_location_head_id: String
+  employee_id: String
+  Employee: employeeResponse
+} 
+
+type employeeResponse{
+  employee_id: String
+  user_id: String
+  User : userDataResponse
+}
+
+input OrganizationLocationInput {
+  organization_location_id: String
+  organization_id: String
+  organization_location: String
+  time_zone: String
+  country: String
+  state: String
+  address_line_1: String
+  address_line_2: String
+  city: String
+  zip: String
+  description: String
+  email: String
+}
+
+input locationHeadInput {
+  employee_id: String,
+  organization_location_head_id: String
+}
+
+input OrganizationLocationHeadAddUpdateInput {
+ organization_location_id: String!
+ headIds: [locationHeadInput]
+}
+
+input OrganizationLocationUpdateInput {
+  organization_location_id: String
+  organization_id: String
+  organization_location: String
+  time_zone: String
+  country: String
+  state: String
+  address_line_1: String
+  address_line_2: String
+  city: String
+  zip: String
+  description: String
+  email: String
+}
+
+input OrganizationLocationDeleteData {
+  organization_location_id: String!
+}
+
+input OrganizationLocationByIDData {
+  organization_id: String!
+  search: String
+}
+
+input OrganizationLocationHeadCreateInput{
+  employee_id: String!
+  organization_location_id: String!
+}
+
+input OrganizationLocationHeadDeleteInput{
+  organization_location_head_id: String
+}
+
+input UpdateMultipleEmployeeLocationInput {
+  organization_location_id: String
+  organization_id: String
+  employee_numbers: [String]
+}
+
+type UpdateMultipleEmployeeLocationResponse {
+  message: String
+  notUpdatedIds: [String]
+}
+
+input getCountryInput {
+  search: String
+}
+
+input getStateAndTimeZoneInput {
+  country_id: String!
+  search: String
+}
+
+type CountryResponse {
+  country_id: String
+  country_name: String
+}
+
+type StateResponse {
+  state_id: String
+  state_name: String
+  country_id: String
+}
+
+type TimezoneResponse {
+  country_time_zone_id: String
+  time_zone: String
+  country_id: String
+}
+
+input MultipleLocationsInput {
+  organization_location: String
+  time_zone: String
+  country: String
+  state: String
+  address_line_1: String
+  address_line_2: String
+  city: String
+  zip: String
+  description: String
+  email: String
+}
+
+input UploadLocationsInput {
+  organization_id: String
+  locations: [MultipleLocationsInput]
+}

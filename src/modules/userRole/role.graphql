@@ -1,0 +1,81 @@
+scalar Date
+directive @isAuthenticated on FIELD_DEFINITION
+directive @hasRole(roles: [String]) on FIELD_DEFINITION
+directive @isOwner(type: String) on FIELD_DEFINITION
+directive @rateLimit(
+  max: Int
+  window: String
+  message: String
+  identityArgs: [String]
+  arrayLengthField: String
+) on FIELD_DEFINITION
+
+type Query {
+  role(filter: RoleFilter!): RoleResponse  @isAuthenticated
+  getAllRole(filter: RoleSearch!): RoleResponse  @isAuthenticated
+}
+
+type Mutation {
+  createRole(data: RoleInput!): CreateUpdateRoleResponse @isAuthenticated
+  updateRole(data: RoleUpdateData!): CreateUpdateRoleResponse @isAuthenticated
+  deleteRole(data: RoleDeleteData!): CreateUpdateRoleResponse @isAuthenticated
+  getRoleByOrganizationId(data: RoleByOrganizationIdData!): [UserRoleListing] @isAuthenticated
+}
+
+type Role {
+  role_id: String!
+  title: String
+  organization_id: String
+}
+
+type UserRoleListing {
+  role_id: String!
+  title: String
+  organization_id: String
+}
+
+type CreateUpdateRoleResponse {
+  message: String
+}
+
+type UserRoleLByOrganizationResponse { 
+  data : [UserRoleListing]
+}
+
+type RoleResponse {
+  count: Int
+  Role: [UserRoleListing]
+}
+
+type GetAllRoleResponse {
+  Role: [UserRoleListing]
+}
+
+input RoleInput {
+  title: String
+  organization_id: String
+}
+
+input RoleFilter {
+  skip: Int
+  limit: Int
+  search: String
+  sortBy: String
+}
+
+input RoleSearch {
+  search: String
+}
+input RoleUpdateData {
+  role_id: String!
+  title: String!
+  organization_id: String
+}
+
+input RoleDeleteData {
+  role_id: String!
+}
+
+input RoleByOrganizationIdData{
+  organization_id: String!
+}

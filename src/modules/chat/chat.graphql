@@ -1,0 +1,59 @@
+scalar Date
+directive @isAuthenticated on FIELD_DEFINITION
+directive @hasRole(roles: [String]) on FIELD_DEFINITION
+directive @isOwner(type: String) on FIELD_DEFINITION
+directive @rateLimit(
+  max: Int
+  window: String
+  message: String
+  identityArgs: [String]
+  arrayLengthField: String
+) on FIELD_DEFINITION
+ type Query {
+        getPosts(query: String):[Post!]!
+        getPost(query: String):Post!
+    }
+    type Post{
+        id:ID!
+        title:String!
+        subtitle:String!
+        body:String!
+        published:Boolean!
+        author: String!
+        upvotes: Int!
+        downvotes: Int!
+        commentCount: Int!
+    }
+    type Mutation{
+        updatePost(
+          id:ID!
+          title:String!
+          subtitle:String!
+          body:String!
+          published:Boolean!
+          author: String!
+          upvotes: Int!
+          downvotes: Int!
+          commentCount: Int!
+        ): Post!
+        deletePost(id: ID!): Post!
+        createPost(
+          id:ID!
+          title:String!
+          subtitle:String!
+          body:String!
+          published:Boolean!
+          author: String!
+          upvotes: Int!
+          downvotes: Int!
+          commentCount: Int!
+        ): Post!
+    }
+    type Subscription {
+        post: PostSubscriptionPayload!
+    }
+
+    type PostSubscriptionPayload {
+        mutation: String!
+        data: Post!
+    }

@@ -1,0 +1,65 @@
+scalar Date
+directive @isAuthenticated on FIELD_DEFINITION
+directive @hasRole(roles: [String]) on FIELD_DEFINITION
+directive @isOwner(type: String) on FIELD_DEFINITION
+directive @rateLimit(
+  max: Int
+  window: String
+  message: String
+  identityArgs: [String]
+  arrayLengthField: String
+) on FIELD_DEFINITION
+
+type Query {
+  projects(filter: ProjectFilter!): ProjectResponse  @isAuthenticated
+}
+
+type Mutation {
+  createProject(data: projectInput!): CreateUpdateProjectResponse @isAuthenticated
+  updateProject(data: ProjectUpdateData!): CreateUpdateProjectResponse @isAuthenticated
+  deleteProject(data: ProjectDeleteData!): CreateUpdateProjectResponse @isAuthenticated
+}
+
+type Project {
+  project_id: String!
+  title: String
+  description: String
+}
+
+type ProjectListing {
+  project_id: String!
+  title: String
+  description: String
+}
+
+type CreateUpdateProjectResponse {
+  message: String
+}
+
+type ProjectResponse {
+  count: Int
+  users: [ProjectListing]
+}
+
+
+input projectInput {
+  title: String
+  description: String
+}
+
+input ProjectFilter {
+  skip: Int
+  limit: Int
+  search: String
+  sortBy: String
+}
+
+input ProjectUpdateData {
+  project_id: String!
+  title: String!
+  description: String!
+}
+
+input ProjectDeleteData {
+  project_id: String!
+}

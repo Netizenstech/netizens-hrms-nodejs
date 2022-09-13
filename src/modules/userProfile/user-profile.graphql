@@ -1,0 +1,188 @@
+scalar Date
+directive @isAuthenticated on FIELD_DEFINITION
+directive @hasRole(roles: [String]) on FIELD_DEFINITION
+directive @isOwner(type: String) on FIELD_DEFINITION
+directive @rateLimit(
+  max: Int
+  window: String
+  message: String
+  identityArgs: [String]
+  arrayLengthField: String
+) on FIELD_DEFINITION
+
+type Query {
+  role(filter: RoleFilter!): RoleResponse @isAuthenticated
+}
+
+type Mutation {
+  myProfile(data: DashboardInput!): DashboardOutput @isAuthenticated
+  personalInfo(data: DashboardInput!): PersonalDetailOutput @isAuthenticated
+  updatePrimaryInfo(data: primaryDetailUpdate!): Message @isAuthenticated
+  updateContactInfo(data: contactDetailUpdate!): Message @isAuthenticated
+}
+
+type Dashboard {
+  user_id: String!
+  employeeInfo: String!
+  firstName: String!
+  lastName: String!
+  date_of_birth: Date!
+  gender: String!
+  blood_group: String!
+}
+
+type DashboardListing {
+  user_id: String!
+  employeeInfo: String!
+  firstName: String!
+  lastName: String!
+  middle_name: String!
+  display_name: String!
+  marital_status: String!
+  date_of_birth: Date!
+  gender: String!
+  blood_group: String!
+  work_email: String
+  email: String
+  mobile_number: String
+  work_phone: String
+  residence_phone: String
+  address: String
+  current_address: String
+}
+
+type Message {
+  message: String
+}
+
+input primaryDetailUpdate {
+  user_id: String
+  firstName: String
+  middle_name: String
+  lastName: String
+  display_name: String
+  date_of_birth: Date
+  gender: String
+  marital_status: String
+  blood_group: String
+}
+input contactDetailUpdate { 
+  user_id: String
+  work_email: String
+  email: String
+  mobile_number: String
+  work_phone: String
+  residence_phone: String
+  address: String
+  current_address: String
+}
+
+type DashboardOutput {
+  user_id: String!
+  employeeInfo: employeeInfoType
+  mediclaimDetail:mediclaimDetailInfo
+  leaveDetail : leaveDetailInfo
+  display_name: String!
+  firstName: String!
+  lastName: String!
+  date_of_birth: Date!
+  gender: String!
+  blood_group: String!
+  profile_url: String
+}
+
+type employeeInfoType {
+  employee_no: String
+  designation: String
+  department: String
+  total_experience: String
+  joining_date: String
+  reporting_manager: String
+}
+
+type mediclaimDetailInfo {
+  policy_no: String
+  mediclaim_amount: String
+  date_of_commencement: Date
+  mobile_no: String
+  last_premium_due_date: Date
+}
+
+type leaveDetailInfo {
+  available_leaves: Float
+  sick_leaves: Float
+  casual_leaves: Float
+  total_leaves_taken: Float
+}
+
+input DashboardInput {
+  user_id: String!
+}
+
+type PersonalDetailOutput {
+  user_id : String
+  profile_url: String
+  primaryDetail : primaryDetailInfo
+  contactDetail : contactDetailInfo
+  jobDetail : jobDetailInfo
+  experience : [experienceInfo],
+  education: [educationInfo]
+  loan: loanInfo
+}
+
+type primaryDetailInfo {
+  firstName: String
+  middle_name: String
+  lastName: String
+  display_name: String
+  date_of_birth: Date
+  gender: String
+  marital_status: String
+  blood_group: String
+}
+
+type contactDetailInfo {
+  work_email: String
+  email: String
+  mobile_number: String
+  work_phone: String
+  residence_phone: String
+  address: String
+  current_address: String
+} 
+
+type jobDetailInfo {
+  designation: String
+  probation_detail: Float
+  notice_period: Float
+  pay_grade: Float
+  shift_start_time: String
+  shift_end_time: String
+}
+
+type educationInfo { 
+  education_center_name : String
+  course: String
+  degree: String
+  joining_date: Date
+  leaving_date: Date
+  user_education_id: String
+}
+
+type loanInfo {
+  loan_amount : Float
+  loan_type: String
+  monthly_repayment_amount: Float
+  rate_of_interest: Float
+  repayment_period: Float
+  repayment_start_date: Date
+}
+
+type experienceInfo {
+  user_experience_id: String
+  organization_name: String
+  designation: String
+  joining_date: Date
+  leaving_date: Date
+  location: String
+}

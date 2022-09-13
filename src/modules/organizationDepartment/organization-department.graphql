@@ -1,0 +1,136 @@
+scalar Date
+directive @isAuthenticated on FIELD_DEFINITION
+directive @hasRole(roles: [String]) on FIELD_DEFINITION
+directive @isOwner(type: String) on FIELD_DEFINITION
+directive @rateLimit(
+  max: Int
+  window: String
+  message: String
+  identityArgs: [String]
+  arrayLengthField: String
+) on FIELD_DEFINITION
+
+
+type Mutation {
+  createOrganizationDepartment(data: OrganizationDepartmentInput!): CreateUpdateOrganizationDepartmentResponse @isAuthenticated
+  deleteOrganizationDepartment(data: OrganizationDepartmentDeleteData!): CreateUpdateOrganizationDepartmentResponse @isAuthenticated
+  getOrganizationDepartmentByOrganizationId(data: OrganizationDepartmentByIDData!): [OrganizationDepartmentResponse] @isAuthenticated
+  updateOrganizationDepartment(data: OrganizationDepartmentUpdateInput!): CreateUpdateOrganizationDepartmentResponse @isAuthenticated
+  createUpdateOrganizationDepartment(data: OrganizationDepartmentHeadAddUpdateInput!): CreateUpdateOrganizationDepartmentResponse @isAuthenticated
+  createOrganizationDepartmentHead(data: OrganizationDepartmentHeadCreateInput!): CreateUpdateOrganizationDepartmentResponse @isAuthenticated
+  deleteOrganizationDepartmentHead(data: OrganizationDepartmentHeadDeleteInput!): CreateUpdateOrganizationDepartmentResponse @isAuthenticated
+  updateEmployeeDepartment(data: UpdateMultipleEmployeeDepartmentInput!): UpdateMultipleEmployeeDepartmentResponse @isAuthenticated
+  updateOrganizationDepartmentSetting(data: ChangeDepartmentSettingInput!): CreateUpdateOrganizationDepartmentResponse @isAuthenticated
+}
+
+type OrganizationDepartment {
+  organization_department_id: String
+  organization_id: String
+  department_name: String
+  department_email: String
+  description: String
+}
+
+type OrganizationDepartmentListing {
+  organization_department_id: String
+  organization_id: String
+  department_name: String
+  department_email: String
+  description: String
+}
+
+type OrganizationDepartmentResponse {
+  organization_department_id: String
+  organization_id: String
+  department_name: String
+  department_email: String
+  description: String
+  allow_employee_post: Boolean
+  allow_employee_post_announcement: Boolean
+  allow_employee_post_polls: Boolean
+  OrganizationDepartmentHeads: [OrganizationBusinessUnitHeadsResponse]
+}
+
+type OrganizationBusinessUnitHeadsResponse {
+  org_department_head_id: String
+  employee_id: String
+  Employee: employeeResponse
+  
+}
+
+type employeeResponse {
+  employee_id: String
+  user_id: String
+  User : userDataResponse
+}
+
+type userDataResponse {
+  firstName: String
+  lastName: String
+}
+
+type CreateUpdateOrganizationDepartmentResponse {
+  message: String
+}
+
+input OrganizationDepartmentInput {
+  organization_department_id: String
+  organization_id: String
+  department_name: String
+  department_email: String
+  description: String
+}
+
+input OrganizationDepartmentUpdateInput {
+  organization_id: String
+  organization_department_id: String
+  department_name: String
+  department_email: String
+  description: String
+}
+
+input OrganizationDepartmentDeleteData {
+  organization_department_id: String!
+}
+
+input departmentHeadInput {
+  employee_id: String,
+  org_department_head_id: String
+}
+
+input OrganizationDepartmentHeadAddUpdateInput {
+ organization_department_id: String!
+ headIds:[departmentHeadInput]
+}
+
+input OrganizationDepartmentByIDData {
+  organization_id: String!
+  search: String
+}
+
+input OrganizationDepartmentHeadCreateInput{
+  employee_id: String!
+  organization_department_id: String!
+}
+
+input OrganizationDepartmentHeadDeleteInput{
+  org_department_head_id: String!
+}
+
+input UpdateMultipleEmployeeDepartmentInput {
+  organization_department_id: String
+  organization_id: String
+  employee_numbers: [String]
+}
+
+type UpdateMultipleEmployeeDepartmentResponse {
+  message: String
+  notUpdatedIds: [String]
+}
+
+input ChangeDepartmentSettingInput {
+  organization_department_id: String
+  allow_employee_post: Boolean
+  allow_employee_post_announcement: Boolean
+  allow_employee_post_polls: Boolean
+}

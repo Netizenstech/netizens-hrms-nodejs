@@ -1,0 +1,66 @@
+scalar Date
+directive @isAuthenticated on FIELD_DEFINITION
+directive @hasRole(roles: [String]) on FIELD_DEFINITION
+directive @isOwner(type: String) on FIELD_DEFINITION
+directive @rateLimit(
+  max: Int
+  window: String
+  message: String
+  identityArgs: [String]
+  arrayLengthField: String
+) on FIELD_DEFINITION
+
+
+type Mutation {
+  createOrganizationWeeklyOff(data: OrganizationWeekOffInput!): CreateUpdateOrganizationWeeklyOffResponse @isAuthenticated
+  updateOrganizationWeeklyOff(data: OrganizationWeekOffInput!): CreateUpdateOrganizationWeeklyOffResponse @isAuthenticated
+  deleteOrganizationWeeklyOff(data: OrganizationWeekOffDeleteInput!): CreateUpdateOrganizationWeeklyOffResponse @isAuthenticated
+  getOrganizationWeeklyOffByOrganizationId(data: GetOrganizationWeekOffInput!): [OrganizationWeeklyOff] @isAuthenticated
+  setAsDefaultOrganizationWeeklyOff(data: SetAsDefaultInput!): CreateUpdateOrganizationWeeklyOffResponse @isAuthenticated
+}
+
+type OrganizationWeeklyOff {
+  org_weekly_off_id: String
+  organization_id: String
+  weekly_off_name: String
+  description: String
+  select_days: String
+  set_as_default: Boolean
+  Employees:[EmployeeResponse]
+}
+
+type EmployeeResponse {
+  employee_id: String
+  department: String
+  employee_no: String
+}
+
+type OrganizationWeeklyOffListing {
+  organization_id: String!
+}
+
+type CreateUpdateOrganizationWeeklyOffResponse {
+  message: String
+}
+
+input OrganizationWeekOffInput {
+  org_weekly_off_id: String
+  organization_id: String
+  weekly_off_name: String
+  description: String
+  select_days: String
+}
+
+input OrganizationWeekOffDeleteInput {
+  org_weekly_off_id: String!
+}
+
+input GetOrganizationWeekOffInput {
+  organization_id: String
+  search: String
+}
+
+input SetAsDefaultInput {
+  status: Boolean
+  org_weekly_off_id: String
+}

@@ -1,0 +1,65 @@
+scalar Date
+directive @isAuthenticated on FIELD_DEFINITION
+directive @hasRole(roles: [String]) on FIELD_DEFINITION
+directive @isOwner(type: String) on FIELD_DEFINITION
+directive @rateLimit(
+  max: Int
+  window: String
+  message: String
+  identityArgs: [String]
+  arrayLengthField: String
+) on FIELD_DEFINITION
+
+type Query {
+  permissions(filter: PermissionFilter!): PermissionResponse  @isAuthenticated
+}
+
+type Mutation {
+  createPermission(data: PermissionInput!): CreateUpdatePermissionResponse @isAuthenticated
+  updatePermission(data: PermissionUpdateData!): CreateUpdatePermissionResponse @isAuthenticated
+  deletePermission(data: PermissionDeleteData!): CreateUpdatePermissionResponse @isAuthenticated
+}
+
+type Permission {
+  id: ID!
+  title: String
+  description: String
+}
+
+type PermissionListing {
+  id: ID!
+  title: String
+  description: String
+}
+
+type CreateUpdatePermissionResponse {
+  message: String
+}
+
+type PermissionResponse {
+  count: Int
+  users: [PermissionListing]
+}
+
+
+input PermissionInput {
+  title: String
+  description: String
+}
+
+input PermissionFilter {
+  skip: Int
+  limit: Int
+  search: String
+  sortBy: String
+}
+
+input PermissionUpdateData {
+  id: Int!
+  title: String!
+  description: String!
+}
+
+input PermissionDeleteData {
+  id: Int!
+}

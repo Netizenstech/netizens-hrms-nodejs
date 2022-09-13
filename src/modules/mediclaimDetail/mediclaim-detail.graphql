@@ -1,0 +1,80 @@
+scalar Date
+directive @isAuthenticated on FIELD_DEFINITION
+directive @hasRole(roles: [String]) on FIELD_DEFINITION
+directive @isOwner(type: String) on FIELD_DEFINITION
+directive @rateLimit(
+  max: Int
+  window: String
+  message: String
+  identityArgs: [String]
+  arrayLengthField: String
+) on FIELD_DEFINITION
+
+
+type Mutation {
+  createMediclaimDetail(data: MediclaimDetailInput!): CreateUpdateMediclaimDetailResponse @isAuthenticated
+  updateMediclaimDetail(data: MediclaimDetailUpdateData!): CreateUpdateMediclaimDetailResponse @isAuthenticated
+  deleteMediclaimDetail(data: MediclaimDetailDeleteData!): CreateUpdateMediclaimDetailResponse @isAuthenticated
+  getMediclaimDetailById(data: MediclaimDetailByIDData!): MediclaimDetailListing @isAuthenticated
+}
+
+type MediclaimDetail {
+  mediclaim_detail_id: String!
+  employee_id: String!
+  organization_id: String!
+  policy_no: String!
+  mediclaim_amount: Float!
+  date_of_commencement: Date!
+  mobile_no: String!
+  last_premium_due_date: Date
+}
+
+type MediclaimDetailListing {
+  mediclaim_detail_id: String!
+  employee_id: String!
+  organization_id: String!
+  policy_no: String!
+  mediclaim_amount: Float!
+  date_of_commencement: Date!
+  mobile_no: String!
+  last_premium_due_date: Date
+}
+
+type CreateUpdateMediclaimDetailResponse {
+  message: String
+}
+
+input MediclaimDetailInput {
+  employee_id: String!
+  organization_id: String!
+  policy_no: String!
+  mediclaim_amount: Float!
+  date_of_commencement: Date!
+  mobile_no: String!
+  last_premium_due_date: Date
+}
+
+input MediclaimDetailFilter {
+  skip: Int
+  limit: Int
+  search: String
+  sortBy: String
+}
+
+input MediclaimDetailUpdateData {
+  mediclaim_detail_id: String!
+  policy_no: String!
+  mediclaim_amount: Float!
+  date_of_commencement: Date!
+  mobile_no: String!
+  last_premium_due_date: Date
+}
+
+input MediclaimDetailDeleteData {
+  mediclaim_detail_id: String!
+}
+
+input MediclaimDetailByIDData {
+  employee_id: String!
+  organization_id: String!
+}

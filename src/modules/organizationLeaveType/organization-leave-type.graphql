@@ -1,0 +1,72 @@
+scalar Date
+directive @isAuthenticated on FIELD_DEFINITION
+directive @hasRole(roles: [String]) on FIELD_DEFINITION
+directive @isOwner(type: String) on FIELD_DEFINITION
+directive @rateLimit(
+  max: Int
+  window: String
+  message: String
+  identityArgs: [String]
+  arrayLengthField: String
+) on FIELD_DEFINITION
+
+
+type Mutation {
+  createOrganizationLeaveType(data: OrganizationLeaveTypeInput!): CreateUpdateOrganizationLeaveTypeResponse @isAuthenticated
+  updateOrganizationLeaveType(data: OrganizationLeaveTypeInput!): CreateUpdateOrganizationLeaveTypeResponse @isAuthenticated
+  deleteOrganizationLeaveType(data: OrganizationLeaveTypeDeleteInput!): CreateUpdateOrganizationLeaveTypeResponse @isAuthenticated
+  getOrganizationLeaveTypeByOrganizationId(data: OrganizationLeaveTypeByIDInput!): [OrganizationLeaveType] @isAuthenticated
+}
+
+type OrganizationLeaveType {
+  organization_leave_type_id: String
+  organization_id: String
+  name: String
+  code: String
+  description: String
+  is_show_list_description_applying: Boolean
+  is_paid: Boolean
+  is_sick: Boolean
+  is_statutory: Boolean
+  is_restrict_to_gender: Boolean
+  gender: String
+  is_restrict_to_employee: Boolean
+  marital_status: String
+  is_list_of_reason: Boolean
+  reason: String
+}
+
+type OrganizationLeaveTypeListing {
+  organization_id: String
+}
+
+type CreateUpdateOrganizationLeaveTypeResponse {
+  message: String
+}
+
+input OrganizationLeaveTypeInput {
+  organization_leave_type_id: String
+  organization_id: String
+  name: String
+  code: String
+  description: String
+  is_show_list_description_applying: Boolean
+  is_paid: Boolean
+  is_sick: Boolean
+  is_statutory: Boolean
+  is_restrict_to_gender: Boolean
+  gender: String
+  is_restrict_to_employee: Boolean
+  marital_status: String
+  is_list_of_reason: Boolean
+  reason: String
+}
+
+input OrganizationLeaveTypeDeleteInput {
+  organization_leave_type_id: String!
+}
+
+input OrganizationLeaveTypeByIDInput {
+  organization_id: String!
+  search: String
+}

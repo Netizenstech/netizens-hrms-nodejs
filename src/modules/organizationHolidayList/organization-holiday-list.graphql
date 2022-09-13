@@ -1,0 +1,50 @@
+scalar Date
+directive @isAuthenticated on FIELD_DEFINITION
+directive @hasRole(roles: [String]) on FIELD_DEFINITION
+directive @isOwner(type: String) on FIELD_DEFINITION
+directive @rateLimit(
+  max: Int
+  window: String
+  message: String
+  identityArgs: [String]
+  arrayLengthField: String
+) on FIELD_DEFINITION
+
+
+type Mutation {
+  createOrganizationHolidayList(data: OrganizationHolidayListInput!): CreateUpdateOrganizationHolidayListResponse @isAuthenticated
+  deleteOrganizationHolidayList(data: OrganizationHolidayListDeleteInput!): CreateUpdateOrganizationHolidayListResponse @isAuthenticated
+  getOrganizationHolidayListByOrganizationId(data: OrganizationHolidayListByIDData!): [OrganizationHolidayList] @isAuthenticated
+  updateOrganizationHolidayList(data: OrganizationHolidayListInput!): CreateUpdateOrganizationHolidayListResponse @isAuthenticated
+}
+
+type OrganizationHolidayList {
+  org_holiday_list_id: String
+  organization_id: String
+  holiday_list_name: String
+  description: String
+}
+
+type OrganizationHolidayListing {
+  organization_id: String
+}
+
+type CreateUpdateOrganizationHolidayListResponse {
+  message: String
+}
+
+input OrganizationHolidayListInput {
+  org_holiday_list_id: String
+  organization_id: String
+  holiday_list_name: String
+  description: String
+}
+
+input OrganizationHolidayListDeleteInput {
+  org_holiday_list_id: String!
+}
+
+input OrganizationHolidayListByIDData {
+  organization_id: String!
+  search: String
+}

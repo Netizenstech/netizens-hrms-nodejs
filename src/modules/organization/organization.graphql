@@ -1,0 +1,69 @@
+scalar Date
+directive @isAuthenticated on FIELD_DEFINITION
+directive @hasRole(roles: [String]) on FIELD_DEFINITION
+directive @isOwner(type: String) on FIELD_DEFINITION
+directive @rateLimit(
+  max: Int
+  window: String
+  message: String
+  identityArgs: [String]
+  arrayLengthField: String
+) on FIELD_DEFINITION
+
+type Query {
+  Organizations(filter: OrganizationFilter!): OrganizationResponse  @isAuthenticated
+}
+
+type Mutation {
+  createOrganization(data: OrganizationInput!): CreateUpdateOrganizationResponse @isAuthenticated
+  updateOrganization(data: OrganizationUpdateData!): CreateUpdateOrganizationResponse @isAuthenticated
+  deleteOrganization(data: OrganizationDeleteData!): CreateUpdateOrganizationResponse @isAuthenticated
+  getOrganizationByOrganizationId(data: OrganizationDeleteData!): OrganizationListing @isAuthenticated
+}
+
+type Organization {
+  organization_id: String!
+  name: String!
+  type: String!
+  description: String!
+}
+
+type OrganizationListing {
+  organization_id: String!
+  name: String!
+  type: String!
+  description: String!
+}
+
+type CreateUpdateOrganizationResponse {
+  message: String
+}
+
+type OrganizationResponse {
+  count: Int
+  Organizations: [OrganizationListing]
+}
+
+input OrganizationInput {
+  name: String
+  type: String
+  description: String
+}
+
+input OrganizationFilter {
+  skip: Int
+  limit: Int
+  search: String
+  sortBy: String
+}
+
+input OrganizationUpdateData {
+  organization_id: String!
+  name: String!
+  type: String!
+  description: String!
+}
+
+input OrganizationDeleteData {
+  organization_id: String!
+}

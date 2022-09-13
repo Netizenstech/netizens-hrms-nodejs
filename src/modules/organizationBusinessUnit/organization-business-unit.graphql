@@ -1,0 +1,130 @@
+scalar Date
+directive @isAuthenticated on FIELD_DEFINITION
+directive @hasRole(roles: [String]) on FIELD_DEFINITION
+directive @isOwner(type: String) on FIELD_DEFINITION
+directive @rateLimit(
+  max: Int
+  window: String
+  message: String
+  identityArgs: [String]
+  arrayLengthField: String
+) on FIELD_DEFINITION
+
+
+type Mutation {
+  createOrganizationBusinessUnit(data: OrganizationBusinessUnitInput!): CreateUpdateOrganizationBusinessUnitResponse @isAuthenticated
+  deleteOrganizationBusinessUnit(data: OrganizationBusinessUnitDeleteData!): CreateUpdateOrganizationBusinessUnitResponse @isAuthenticated
+  getOrganizationBusinessUnitByOrganizationId(data: OrganizationBusinessUnitByIDData!): [OrganizationBusinessUnitResponse] @isAuthenticated
+  updateOrganizationBusinessUnit(data: OrganizationBusinessUnitUpdateInput!): CreateUpdateOrganizationBusinessUnitResponse @isAuthenticated
+  createUpdateOrganizationBusinessHead(data: OrganizationBusinessUnitHeadAddUpdateInput!): CreateUpdateOrganizationBusinessUnitResponse @isAuthenticated
+  getSingleOrganizationBusinessUnit(data: OrganizationBusinessUnitByBusinessUnitIdData!): OrganizationBusinessUnitResponse @isAuthenticated
+  createOrganizationBusinessUnitHead(data: CreateBusinessUnitHeadInput!): CreateUpdateOrganizationBusinessUnitResponse @isAuthenticated
+  deleteOrganizationBusinessUnitHead(data: businessUnitHeadDeleteInput!): CreateUpdateOrganizationBusinessUnitResponse @isAuthenticated
+  updateEmployeeBusinessUnit(data: UpdateMultipleEmployeeBusinessUnitInput!): UpdateMultipleEmployeeBusinessUnitResponse @isAuthenticated
+}
+
+type OrganizationBusinessUnit {
+  organization_business_unit_id :String
+  organization_id: String
+  business_unit_name: String
+  business_unit_email: String
+  description: String
+}
+
+type OrganizationBusinessUnitListing {
+  organization_business_unit_id: String
+  organization_id: String
+  business_unit_name: String
+  business_unit_email: String
+  description: String
+}
+
+type CreateUpdateOrganizationBusinessUnitResponse {
+  message: String
+}
+
+type OrganizationBusinessUnitResponse {
+  organization_business_unit_id: String
+  organization_id: String
+  business_unit_name: String
+  business_unit_email: String
+  description: String
+  OrganizationBusinessUnitHeads: [OrganizationBusinessUnitHeadsResponse]
+}
+
+type userDataResponse {
+  firstName: String
+  lastName: String
+}
+
+type employeeResponse {
+  employee_id: String
+  user_id: String
+  User : userDataResponse
+}
+
+type OrganizationBusinessUnitHeadsResponse {
+  org_business_unit_head_id: String
+  employee_id: String
+  Employee: employeeResponse
+  
+} 
+
+input OrganizationBusinessUnitInput {
+  organization_business_unit_id: String
+  organization_id: String
+  business_unit_name: String
+  business_unit_email: String
+  description: String
+}
+
+input businessUnitHeadInput {
+  employee_id: String
+  org_business_unit_head_id: String
+}
+
+input businessUnitHeadDeleteInput {
+  org_business_unit_head_id: String!
+}
+
+input OrganizationBusinessUnitHeadAddUpdateInput {
+ organization_business_unit_id: String!
+ headIds:[businessUnitHeadInput]
+}
+
+input OrganizationBusinessUnitUpdateInput {
+  organization_id: String
+  organization_business_unit_id :String
+  business_unit_name: String
+  business_unit_email: String
+  description: String
+}
+
+input OrganizationBusinessUnitDeleteData {
+  organization_business_unit_id: String!
+}
+
+input CreateBusinessUnitHeadInput{
+  organization_business_unit_id: String!
+  employee_id: String!
+}
+
+input OrganizationBusinessUnitByIDData {
+  organization_id: String!
+  search: String
+}
+
+input OrganizationBusinessUnitByBusinessUnitIdData{
+  organization_business_unit_id: String!
+}
+
+input UpdateMultipleEmployeeBusinessUnitInput {
+  organization_business_unit_id: String
+  organization_id: String
+  employee_numbers: [String]
+}
+
+type UpdateMultipleEmployeeBusinessUnitResponse {
+  message: String
+  notUpdatedIds: [String]
+}

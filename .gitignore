@@ -1,0 +1,11 @@
+node_modules
+.env
+dist
+src/public/profile/*.*
+src/public/document/*.*
+src/public/organizationBackground/*.*
+src/public/organizationLogo/*.*
+
+src/public/State 22 Aug.xlsx
+src/public/country 22 agu.xlsx
+src/public/timezon 22 Aug.xlsx

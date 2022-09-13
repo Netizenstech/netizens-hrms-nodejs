@@ -1,0 +1,199 @@
+scalar Date
+directive @isAuthenticated on FIELD_DEFINITION
+directive @hasRole(roles: [String]) on FIELD_DEFINITION
+directive @isOwner(type: String) on FIELD_DEFINITION
+directive @rateLimit(
+  max: Int
+  window: String
+  message: String
+  identityArgs: [String]
+  arrayLengthField: String
+) on FIELD_DEFINITION
+
+type Query {
+  Employees(filter: EmployeeFilter!): EmployeeResponse @isAuthenticated
+}
+
+type Mutation {
+  createEmployee(data: EmployeeInput!): CreateUpdateEmployeeResponse
+    @isAuthenticated
+  updateEmployee(data: EmployeeUpdateData!): CreateUpdateEmployeeResponse
+    @isAuthenticated
+  deleteEmployee(data: EmployeeDeleteData!): CreateUpdateEmployeeResponse
+    @isAuthenticated
+  getEmployeeById(data: EmployeeDeleteData!): EmployeeListing @isAuthenticated
+  getEmployeeByOrganizationId(
+    data: EmployeeByOrganizationInput!
+  ): [EmployeeByOrganizationResponse] @isAuthenticated
+  organizationEmployeeByFilterAndCount(
+    data: EmployeeByOrganizationAndFilterInput!
+  ): EmployeeByOrganizationAndFilterResponse @isAuthenticated
+  organizationProbationEmployee(
+    data: ProbationEmployeeByOrganizationInput!
+  ): EmployeeByOrganizationAndFilterResponse @isAuthenticated
+  organizationShiftPolicyWiseEmployee(
+    data: ShiftEmployeeByOrganizationInput!
+  ): EmployeeByOrganizationAndFilterResponse @isAuthenticated
+}
+
+type Employee {
+  employee_id: String!
+  user_id: String!
+  role_id: String!
+  organization_id: String!
+  designation: String!
+  salary: Float!
+  joining_date: Date!
+  leaving_date: Date
+  employee_no: Int
+  department: String
+  reporting_manager: String
+  probation_detail: Float
+  notice_period: Float
+  pay_grade: Float
+  shift_start_time: String
+  shift_end_time: String
+}
+
+type EmployeeListing {
+  employee_id: String!
+  user_id: String!
+  role_id: String!
+  organization_id: String!
+  employee_name: String!
+  designation: String!
+  salary: Float!
+  joining_date: Date!
+  leaving_date: Date
+  employee_no: Int
+  department: String
+  reporting_manager: String
+  probation_detail: Float
+  notice_period: Float
+  pay_grade: Float
+  shift_start_time: String
+  shift_end_time: String
+}
+
+type EmployeeByOrganizationResponse {
+  employee_id: String
+  user_id: String
+  role_id: String
+  organization_id: String
+  designation: String
+  salary: Float
+  joining_date: Date
+  leaving_date: Date
+  employee_no: Int
+  department: String
+  reporting_manager: String
+  probation_detail: Float
+  notice_period: Float
+  pay_grade: Float
+  shift_start_time: String
+  shift_end_time: String
+  User: UserResponse
+}
+
+type EmployeeByOrganizationAndFilterResponse {
+  count: Int
+  data: [EmployeeByOrganizationResponse]
+}
+
+type UserResponse {
+  address: String
+  firstName: String
+  lastName: String
+  middle_name: String
+  display_name: String
+}
+
+type CreateUpdateEmployeeResponse {
+  message: String
+}
+
+type EmployeeResponse {
+  count: Int
+  Employees: [EmployeeListing]
+}
+
+input EmployeeInput {
+  employee_name: String!
+  user_id: String!
+  role_id: String!
+  organization_id: String!
+  designation: String!
+  salary: Float!
+  joining_date: Date!
+  department: String
+  reporting_manager: String
+  probation_detail: Float
+  notice_period: Float
+  pay_grade: Float
+  shift_start_time: String
+  shift_end_time: String
+  organization_probation_policy_id: String
+  probation_end_date: Date
+  probation_status: Int
+  performance_feedback: String
+}
+
+input EmployeeFilter {
+  skip: Int
+  limit: Int
+  search: String
+  sortBy: String
+}
+
+input EmployeeUpdateData {
+  employee_id: String!
+  user_id: String!
+  role_id: String!
+  organization_id: String!
+  designation: String!
+  salary: Float!
+  joining_date: Date!
+  leaving_date: Date
+  employee_no: Int
+  department: String
+  reporting_manager: String
+  probation_detail: Float
+  notice_period: Float
+  pay_grade: Float
+  shift_start_time: String
+  shift_end_time: String
+}
+
+input EmployeeDeleteData {
+  employee_id: String!
+}
+
+input EmployeeByOrganizationInput {
+  organization_id: String!
+  search: String
+}
+
+input EmployeeByOrganizationAndFilterInput {
+  organization_id: String!
+  search: String
+  filter: String
+  id: String
+}
+
+input ProbationEmployeeByOrganizationInput {
+  type: String!
+  search: String
+  filter: String
+  id: String
+  pageRecord: Int
+  pageNo: Int
+  probationType: String
+  organization_id: String!
+}
+
+input ShiftEmployeeByOrganizationInput {
+  search: String
+  id: String
+  pageRecord: Int
+  pageNo: Int
+}

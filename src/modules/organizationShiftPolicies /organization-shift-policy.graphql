@@ -1,0 +1,203 @@
+scalar Date
+directive @isAuthenticated on FIELD_DEFINITION
+directive @hasRole(roles: [String]) on FIELD_DEFINITION
+directive @isOwner(type: String) on FIELD_DEFINITION
+directive @rateLimit(
+  max: Int
+  window: String
+  message: String
+  identityArgs: [String]
+  arrayLengthField: String
+) on FIELD_DEFINITION
+
+
+type Mutation {
+  createOrganizationShiftPolicy(data: OrganizationShiftPolicyInput!): CreateUpdateOrganizationShiftPolicyResponse @isAuthenticated
+  updateOrganizationShiftPolicy(data: OrganizationShiftPolicyUpdateData!): CreateUpdateOrganizationShiftPolicyResponse @isAuthenticated
+  deleteOrganizationShiftPolicy(data: OrganizationShiftPolicyDeleteData!): CreateUpdateOrganizationShiftPolicyResponse @isAuthenticated
+  getOrganizationShiftPolicyByOrganizationId(data: OrganizationShiftPolicyByIDData!): [OrganizationShiftPolicyListing] @isAuthenticated
+  setAsDefaultOrganizationShiftPolicy(data: SetAsDefaultInput!): CreateUpdateOrganizationShiftPolicyResponse @isAuthenticated
+}
+
+type OrganizationShiftPolicy {
+  organization_shift_policy_id :String
+  organization_id: String
+  shift_name: String
+  shift_code: String
+  description: String
+  flexible_time: Boolean
+  different_for_different_day_time: Boolean
+  different_for_different_day_break: Boolean
+  monday_start_time: String
+  monday_end_time: String
+  tuesday_start_time: String
+  tuesday_end_time: String
+  wednesday_start_time: String
+  wednesday_end_time: String
+  thursday_start_time: String
+  thursday_end_time: String
+  friday_start_time: String
+  friday_end_time: String
+  saturday_start_time: String
+  saturday_end_time: String
+  sunday_start_time: String
+  sunday_end_time: String
+  set_as_default: Boolean
+  monday_break_time: String
+  tuesday_break_time: String
+  wednesday_break_time: String
+  thursday_break_time: String
+  friday_break_time: String
+  saturday_break_time: String
+  sunday_break_time: String
+  monday_total_work_hour: String
+  tuesday_total_work_hour: String
+  wednesday_total_work_hour: String
+  thursday_total_work_hour: String
+  friday_total_work_hour: String
+  saturday_total_work_hour: String
+  sunday_total_work_hour: String
+}
+
+type OrganizationShiftPolicyListing {
+  organization_shift_policy_id :String
+  organization_id: String
+  shift_name: String
+  shift_code: String
+  description: String
+  flexible_time: Boolean
+  different_for_different_day_time: Boolean
+  different_for_different_day_break: Boolean
+  monday_start_time: String
+  monday_end_time: String
+  tuesday_start_time: String
+  tuesday_end_time: String
+  wednesday_start_time: String
+  wednesday_end_time: String
+  thursday_start_time: String
+  thursday_end_time: String
+  friday_start_time: String
+  friday_end_time: String
+  saturday_start_time: String
+  saturday_end_time: String
+  sunday_start_time: String
+  sunday_end_time: String
+  set_as_default: Boolean
+  monday_break_time: String
+  tuesday_break_time: String
+  wednesday_break_time: String
+  thursday_break_time: String
+  friday_break_time: String
+  saturday_break_time: String
+  sunday_break_time: String
+  monday_total_work_hour: String
+  tuesday_total_work_hour: String
+  wednesday_total_work_hour: String
+  thursday_total_work_hour: String
+  friday_total_work_hour: String
+  saturday_total_work_hour: String
+  sunday_total_work_hour: String
+  Employees:[EmployeeResponse]
+}
+
+type EmployeeResponse {
+  employee_id: String
+  department: String
+  employee_no: String
+}
+
+type CreateUpdateOrganizationShiftPolicyResponse {
+  message: String
+}
+
+input OrganizationShiftPolicyInput {
+  organization_shift_policy_id :String
+  organization_id: String
+  shift_name: String
+  shift_code: String
+  description: String
+  flexible_time: Boolean
+  different_for_different_day_time: Boolean
+  different_for_different_day_break: Boolean
+  monday_start_time: String
+  monday_end_time: String
+  tuesday_start_time: String
+  tuesday_end_time: String
+  wednesday_start_time: String
+  wednesday_end_time: String
+  thursday_start_time: String
+  thursday_end_time: String
+  friday_start_time: String
+  friday_end_time: String
+  saturday_start_time: String
+  saturday_end_time: String
+  sunday_start_time: String
+  sunday_end_time: String
+  monday_break_time: String
+  tuesday_break_time: String
+  wednesday_break_time: String
+  thursday_break_time: String
+  friday_break_time: String
+  saturday_break_time: String
+  sunday_break_time: String
+  monday_total_work_hour: String
+  tuesday_total_work_hour: String
+  wednesday_total_work_hour: String
+  thursday_total_work_hour: String
+  friday_total_work_hour: String
+  saturday_total_work_hour: String
+  sunday_total_work_hour: String
+}
+
+input OrganizationShiftPolicyUpdateData {
+  organization_shift_policy_id :String
+  organization_id: String
+  shift_name: String
+  shift_code: String
+  description: String
+  flexible_time: Boolean
+  different_for_different_day_time: Boolean
+  different_for_different_day_break: Boolean
+  monday_start_time: String
+  monday_end_time: String
+  tuesday_start_time: String
+  tuesday_end_time: String
+  wednesday_start_time: String
+  wednesday_end_time: String
+  thursday_start_time: String
+  thursday_end_time: String
+  friday_start_time: String
+  friday_end_time: String
+  saturday_start_time: String
+  saturday_end_time: String
+  sunday_start_time: String
+  sunday_end_time: String
+  monday_break_time: String
+  tuesday_break_time: String
+  wednesday_break_time: String
+  thursday_break_time: String
+  friday_break_time: String
+  saturday_break_time: String
+  sunday_break_time: String
+  monday_total_work_hour: String
+  tuesday_total_work_hour: String
+  wednesday_total_work_hour: String
+  thursday_total_work_hour: String
+  friday_total_work_hour: String
+  saturday_total_work_hour: String
+  sunday_total_work_hour: String
+}
+
+input OrganizationShiftPolicyDeleteData {
+  organization_shift_policy_id: String!
+}
+
+input OrganizationShiftPolicyByIDData {
+  organization_id: String!
+  search: String
+}
+
+input SetAsDefaultInput {
+  status: Boolean
+  organization_shift_policy_id: String
+}

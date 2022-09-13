@@ -1,0 +1,65 @@
+scalar Date
+directive @isAuthenticated on FIELD_DEFINITION
+directive @hasRole(roles: [String]) on FIELD_DEFINITION
+directive @isOwner(type: String) on FIELD_DEFINITION
+directive @rateLimit(
+  max: Int
+  window: String
+  message: String
+  identityArgs: [String]
+  arrayLengthField: String
+) on FIELD_DEFINITION
+
+type Query {
+  teams(filter: TeamFilter!): TeamResponse  @isAuthenticated
+}
+
+type Mutation {
+  createTeam(data: teamInput!): CreateUpdateTeamResponse @isAuthenticated
+  updateTeam(data: TeamUpdateData!): CreateUpdateTeamResponse @isAuthenticated
+  deleteTeam(data: TeamDeleteData!): CreateUpdateTeamResponse @isAuthenticated
+}
+
+type Team {
+  id: ID!
+  title: String
+  description: String
+}
+
+type TeamListing {
+  id: ID!
+  title: String
+  description: String
+}
+
+type CreateUpdateTeamResponse {
+  message: String
+}
+
+type TeamResponse {
+  count: Int
+  users: [TeamListing]
+}
+
+
+input teamInput {
+  title: String
+  description: String
+}
+
+input TeamFilter {
+  skip: Int
+  limit: Int
+  search: String
+  sortBy: String
+}
+
+input TeamUpdateData {
+  id: Int!
+  title: String!
+  description: String!
+}
+
+input TeamDeleteData {
+  id: Int!
+}

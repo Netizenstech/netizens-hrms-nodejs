@@ -1,0 +1,48 @@
+scalar Date
+directive @isAuthenticated on FIELD_DEFINITION
+directive @hasRole(roles: [String]) on FIELD_DEFINITION
+directive @isOwner(type: String) on FIELD_DEFINITION
+directive @rateLimit(
+  max: Int
+  window: String
+  message: String
+  identityArgs: [String]
+  arrayLengthField: String
+) on FIELD_DEFINITION
+
+type Mutation {
+  createOrganizationJobTitle(data: OrganizationJobTitleInput!): CreateUpdateOrganizationJobTitleResponse @isAuthenticated
+  updateOrganizationJobTitle(data: OrganizationJobTitleInput!): CreateUpdateOrganizationJobTitleResponse @isAuthenticated
+  deleteOrganizationJobTitle(data: OrganizationJobTitleDeleteData!): CreateUpdateOrganizationJobTitleResponse @isAuthenticated
+  getOrganizationJobTitleByOrganizationId(data: OrganizationJobTitleByOrganizationId!): [OrganizationJobTitleGetResponse] @isAuthenticated
+}
+
+type OrganizationJobTitleGetResponse {
+  organization_id: String
+  org_job_title_id: String
+  job_title: String
+  description: String
+}
+
+type OrganizationJobTitleListing {
+  organization_id: String
+}
+
+type CreateUpdateOrganizationJobTitleResponse {
+  message: String
+}
+
+input OrganizationJobTitleInput {
+  organization_id: String
+  org_job_title_id: String
+  job_title: String
+  description: String
+}
+
+input OrganizationJobTitleDeleteData {
+  org_job_title_id: String!
+}
+
+input OrganizationJobTitleByOrganizationId {
+  organization_id: String
+}

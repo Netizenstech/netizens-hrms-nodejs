@@ -1,0 +1,114 @@
+scalar Date
+directive @isAuthenticated on FIELD_DEFINITION
+directive @hasRole(roles: [String]) on FIELD_DEFINITION
+directive @isOwner(type: String) on FIELD_DEFINITION
+directive @rateLimit(
+  max: Int
+  window: String
+  message: String
+  identityArgs: [String]
+  arrayLengthField: String
+) on FIELD_DEFINITION
+
+
+type Mutation {
+  createOrganizationLeavePlan(data: OrganizationLeavePlanInput!): CreateUpdateOrganizationLeavePlanResponse @isAuthenticated
+  updateOrganizationLeavePlan(data: OrganizationLeavePlanInput!): CreateUpdateOrganizationLeavePlanResponse @isAuthenticated
+  deleteOrganizationLeavePlan(data: OrganizationLeavePlanDeleteInput!): CreateUpdateOrganizationLeavePlanResponse @isAuthenticated
+  getOrganizationLeavePlanByOrganizationId(data: OrganizationLeavePlanByIDInput!): [OrganizationLeavePlan] @isAuthenticated
+  assignedLeaveTypeToLeavePlan(data: assignedLeaveTypeInput!): CreateUpdateOrganizationLeavePlanResponse @isAuthenticated
+  configureAssignedLeaveType(data: configureAssignedLeaveTypeInput!): CreateUpdateOrganizationLeavePlanResponse @isAuthenticated
+  deleteLeaveAssignedType(data: DeleteAssignedLeaveTypeInput!): CreateUpdateOrganizationLeavePlanResponse @isAuthenticated
+  getAssignedLeaveTypeByLeavePlanId(data: GetAssignedLeaveTypeByLeavePlanIdInput!): [AssignedLeaveTypeByLeavePlanIdResponse] @isAuthenticated
+  cloneLeavePlan(data: CloneLeavePlanInput!): CreateUpdateOrganizationLeavePlanResponse @isAuthenticated
+}
+
+type OrganizationLeavePlan {
+  organization_leave_plan_id: String
+  organization_id: String
+  name: String
+  leave_calendar_year_start: Date
+  leave_calendar_year_end: Date
+}
+
+type OrganizationLeavePlanListing {
+  organization_id: String
+}
+
+type CreateUpdateOrganizationLeavePlanResponse {
+  message: String
+}
+
+input OrganizationLeavePlanInput {
+  organization_leave_plan_id: String
+  organization_id: String
+  name: String
+  leave_calendar_year_start: Date
+  leave_calendar_year_end: Date
+}
+
+input OrganizationLeavePlanDeleteInput {
+  organization_leave_plan_id: String!
+}
+
+input OrganizationLeavePlanByIDInput {
+  organization_id: String!
+  search: String
+}
+
+input assignedLeaveTypeObjectInput {
+  organization_leave_plan_assigned_id: String
+  organization_leave_type_id: String
+}
+
+input assignedLeaveTypeInput {
+  organization_assigned_types: [assignedLeaveTypeObjectInput]
+  organization_leave_plan_id: String
+}
+
+input configureAssignedLeaveTypeInput {
+  organization_leave_plan_assigned_id: String
+  leave_limit: Float
+  unlimited: Boolean
+  apply_being_accrued: Boolean
+  beyond_annual_quota: Boolean
+  not_excluding_day: Float
+  is_leave_quota_allocated_to_join_month: Boolean
+  month: Float
+  credit_to_his_reports: Boolean
+}
+
+input DeleteAssignedLeaveTypeInput {
+  organization_leave_plan_assigned_id: String
+}
+
+input GetAssignedLeaveTypeByLeavePlanIdInput {
+  organization_leave_plan_id: String
+}
+
+type OrganizationTypeResponse {
+  code: String
+  name: String
+}
+
+type AssignedLeaveTypeByLeavePlanIdResponse {
+  apply_being_accrued: Boolean
+  beyond_annual_quota: Boolean
+  credit_to_his_reports: Boolean
+  is_leave_quota_allocated_to_join_month: Boolean
+  leave_limit: Float
+  month: Float
+  not_excluding_day: Float
+  organization_leave_plan_assigned_id: String
+  organization_leave_plan_id: String
+  OrganizationLeaveType: OrganizationTypeResponse
+}
+
+input CloneLeavePlanInput {
+  organization_leave_plan_id: String
+  organization_id: String
+  name: String
+  leave_calendar_year_start: Date
+  leave_calendar_year_end: Date
+  organization_assigned_types: [String]
+}

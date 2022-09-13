@@ -1,0 +1,72 @@
+scalar Date
+directive @isAuthenticated on FIELD_DEFINITION
+directive @hasRole(roles: [String]) on FIELD_DEFINITION
+directive @isOwner(type: String) on FIELD_DEFINITION
+directive @rateLimit(
+  max: Int
+  window: String
+  message: String
+  identityArgs: [String]
+  arrayLengthField: String
+) on FIELD_DEFINITION
+
+type Query {
+  UserDocuments(filter: UserDocumentFilter!): UserDocumentResponse  @isAuthenticated
+}
+
+type Mutation {
+  createUserDocument(data: UserDocumentInput!): CreateUpdateUserDocumentResponse @isAuthenticated
+  updateUserDocument(data: UserDocumentUpdateData!): CreateUpdateUserDocumentResponse @isAuthenticated
+  deleteUserDocument(data: UserDocumentDeleteData!): CreateUpdateUserDocumentResponse @isAuthenticated
+}
+
+type UserDocument {
+  user_document_id: String!
+  user_id: String!
+  document_name: String!
+  document_url: String!
+  size: String!
+}
+
+type UserDocumentListing {
+  user_document_id: String!
+  user_id: String!
+  document_name: String!
+  document_url: String!
+  size: String!
+  updatedAt: Date
+  createdAt: Date
+}
+
+type CreateUpdateUserDocumentResponse {
+  message: String
+}
+
+type UserDocumentResponse {
+  count: Int
+  Documents: [UserDocumentListing]
+}
+
+input UserDocumentInput {
+  user_id: String!
+  document_name: String!
+  document_url: String!
+  size: String!
+}
+
+input UserDocumentFilter {
+  user_id:String!,
+  skip: Int
+  limit: Int
+  search: String
+  sortBy: String
+}
+
+input UserDocumentUpdateData {
+  user_document_id: String!
+  document_name: String!
+}
+
+input UserDocumentDeleteData {
+  user_document_id: String!
+}

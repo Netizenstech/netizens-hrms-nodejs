@@ -1,0 +1,161 @@
+scalar Date
+directive @isAuthenticated on FIELD_DEFINITION
+directive @hasRole(roles: [String]) on FIELD_DEFINITION
+directive @isOwner(type: String) on FIELD_DEFINITION
+directive @rateLimit(
+  max: Int
+  window: String
+  message: String
+  identityArgs: [String]
+  arrayLengthField: String
+) on FIELD_DEFINITION
+
+
+type Mutation {
+  createAttendanceCaptureSchemeBasicInfo(data: AttendanceSchemeInput!): AttendanceBasicSchemeResponse @isAuthenticated
+  updateAttendanceCaptureSchemeBiometricAndWebClockIn(data: AttendanceSchemeInput!): CreateUpdateOrganizationAttendanceSchemeResponse @isAuthenticated
+  updateOrganizationAttendanceCaptureSchemeRemotePunch(data: AttendanceSchemeInput!): CreateUpdateOrganizationAttendanceSchemeResponse @isAuthenticated
+  updateOrganizationAttendanceCaptureSchemeWFH(data: AttendanceSchemeInput!): CreateUpdateOrganizationAttendanceSchemeResponse @isAuthenticated
+  updateOrganizationAttendanceCaptureSchemeRegularization(data: AttendanceSchemeInput!): CreateUpdateOrganizationAttendanceSchemeResponse @isAuthenticated
+  getOrganizationAttendanceCaptureScheme(data: GetAttendanceSchemeInput!): [GetAttendanceSchemeResponse] @isAuthenticated
+}
+
+type GetAttendanceSchemeResponse {
+  attendance_capture_scheme_id: String
+  organization_id: String
+  attendance_capture_scheme: String
+  description: String
+
+  is_used_bio_metric: Boolean
+  is_used_web_clock: Boolean
+  allow_user_web_clock_if_forgot_id_card: Boolean
+  
+  allow_remote_clock_in_mobile: Boolean
+  allow_remote_clock_in_web: Boolean
+  is_comment_require_for_remote_clock_in: Boolean
+  is_approval_require_for_remote_clock_in: Boolean
+
+  allow_wfh: Boolean
+  allow_on_duty: Boolean
+  OrganizationAttendanceWFH: WFHResponse
+
+  allow_emp_to_adjust_attendance: Boolean
+  allow_attendance_type: String
+  emp_allowed_times_option: Boolean
+  emp_allowed_times: Float
+  emp_allowed_times_in: String
+  emp_allowed_raised_past_date_option: Boolean
+  emp_allowed_raised_past_date_beyond:  Date
+  emp_allowed_raised_past_date_ending_on: Date
+  restrict_past_date_adjust_option: Boolean
+  restrict_past_date_adjust_days_back: Float
+  allow_emp_to_regularise_attendance_log: Boolean
+  emp_allow_regularise_time_option: Boolean
+  emp_allow_regularise_time: Float
+  emp_allow_regularise_time_in: String
+  emp_allow_regularise_past_date_option: Boolean
+  emp_allow_regularise_past_date_beyond: Date
+  emp_allow_regularise_past_date_ending: Date
+  emp_allow_regularise_past_date_restrict_option: Boolean
+  emp_allow_regularise_past_date_restrict_days: Float
+}
+
+type WFHResponse{
+  allow_for_half_day_request: Boolean
+  allow_to_do_hourly_wfh: Boolean
+  required_attachment_when_applied: Boolean
+  allow_clock_in_out: Boolean
+  rais_wfh_days_option: Boolean
+  rais_wfh_days: Float
+  rais_wfh_days_in: String
+  rais_wfh_time_option: Boolean
+  rais_wfh_time: Float
+  rais_wfh_time_in: String
+  rais_wfh_past_dated_option: Boolean
+  rais_wfh_past_dated_months: Date
+  rais_wfh_past_dated_ending_on: Date
+  restrict_past_date_option: Boolean
+  restrict_past_date_days: Float
+  restrict_emp_raise_wfh_request_option: Boolean
+  restrict_emp_raise_wfh_request_on: Float
+  apply_wfh_request_option: Boolean
+  apply_wfh_request_prior_days: Float
+  apply_wfh_request_working_days: Float
+}
+
+input AttendanceSchemeInput {
+  attendance_capture_scheme_id: String
+  organization_id: String
+  attendance_capture_scheme: String
+  description: String
+
+  is_used_bio_metric: Boolean
+  is_used_web_clock: Boolean
+  allow_user_web_clock_if_forgot_id_card: Boolean
+  
+  allow_remote_clock_in_mobile: Boolean
+  allow_remote_clock_in_web: Boolean
+  is_comment_require_for_remote_clock_in: Boolean
+  is_approval_require_for_remote_clock_in: Boolean
+
+  allow_wfh: Boolean
+  allow_on_duty: Boolean
+  wfhInput: WFHInput
+
+  allow_emp_to_adjust_attendance: Boolean
+  allow_attendance_type: String
+  emp_allowed_times_option: Boolean
+  emp_allowed_times: Float
+  emp_allowed_times_in: String
+  emp_allowed_raised_past_date_option: Boolean
+  emp_allowed_raised_past_date_beyond:  Date
+  emp_allowed_raised_past_date_ending_on: Date
+  restrict_past_date_adjust_option: Boolean
+  restrict_past_date_adjust_days_back: Float
+  allow_emp_to_regularise_attendance_log: Boolean
+  emp_allow_regularise_time_option: Boolean
+  emp_allow_regularise_time: Float
+  emp_allow_regularise_time_in: String
+  emp_allow_regularise_past_date_option: Boolean
+  emp_allow_regularise_past_date_beyond: Date
+  emp_allow_regularise_past_date_ending: Date
+  emp_allow_regularise_past_date_restrict_option: Boolean
+  emp_allow_regularise_past_date_restrict_days: Float
+}
+
+input WFHInput{
+  allow_for_half_day_request: Boolean
+  allow_to_do_hourly_wfh: Boolean
+  required_attachment_when_applied: Boolean
+  allow_clock_in_out: Boolean
+  rais_wfh_days_option: Boolean
+  rais_wfh_days: Float
+  rais_wfh_days_in: String
+  rais_wfh_time_option: Boolean
+  rais_wfh_time: Float
+  rais_wfh_time_in: String
+  rais_wfh_past_dated_option: Boolean
+  rais_wfh_past_dated_months: Date
+  rais_wfh_past_dated_ending_on: Date
+  restrict_past_date_option: Boolean
+  restrict_past_date_days: Float
+  restrict_emp_raise_wfh_request_option: Boolean
+  restrict_emp_raise_wfh_request_on: Float
+  apply_wfh_request_option: Boolean
+  apply_wfh_request_prior_days: Float
+  apply_wfh_request_working_days: Float
+}
+
+type CreateUpdateOrganizationAttendanceSchemeResponse {
+  message: String
+}
+
+type AttendanceBasicSchemeResponse {
+  message: String
+  attendance_capture_scheme_id: String
+}
+
+input GetAttendanceSchemeInput {
+  organization_id: String
+  search: String
+}

@@ -1,0 +1,186 @@
+scalar Date
+directive @isAuthenticated on FIELD_DEFINITION
+directive @hasRole(roles: [String]) on FIELD_DEFINITION
+directive @isOwner(type: String) on FIELD_DEFINITION
+directive @rateLimit(
+  max: Int
+  window: String
+  message: String
+  identityArgs: [String]
+  arrayLengthField: String
+) on FIELD_DEFINITION
+
+type Query {
+  user: User @isAuthenticated
+  users(filter: UserFilter!): UsersResponse  @isAuthenticated
+}
+
+type Mutation {
+  createUser(user: userInput!): CreateUpdateUserResponse 
+  updateProfile(data: UserData!): User @isAuthenticated
+  updatePassword(data: passwordInput!): CreateUpdateUserResponse @isAuthenticated
+  verifyUser(data: VerifyInput!): CreateUpdateUserResponse
+  adminUpdate(data: AdminUpdateInput!): CreateUpdateUserResponse @hasRole(roles: ["ADMIN"])
+  login(data: loginData!): LoginResponse
+  updateUser(data: UserDatas!): User @isAuthenticated
+  getSingleUserById(data: SingleUser!): UserListing @isAuthenticated
+  uploadProfile(data: UploadProfileInput!): CreateUpdateUserResponse @isAuthenticated
+  createOrganizationAdmin(data: organizationAdminInput!): CreateUpdateUserResponse @isAuthenticated
+}
+
+type User {
+  user_id: String!
+  firstName: String
+  lastName: String
+  email: String
+  date_of_birth: Date
+  address: String
+  mobile_number: String
+  password : String
+  gender:String
+  blood_group: String
+  profile_url: String
+  middle_name: String
+  display_name: String
+  work_email: String
+  work_phone: String
+  residence_phone: String
+  current_address: String
+}
+
+type UserListing {
+  user_id: String!
+  firstName: String
+  lastName: String
+  email: String
+  date_of_birth: Date
+  address: String
+  mobile_number: String
+  password : String
+  gender: String
+  blood_group: String
+  profile_url: String
+  middle_name: String
+  display_name: String
+  work_email: String
+  work_phone: String
+  residence_phone: String
+  current_address: String
+}
+
+input UploadProfileInput {
+  profile_url: String
+}
+
+type CreateUpdateUserResponse {
+  message: String
+}
+
+type UsersResponse {
+  count: Int
+  users: [UserListing]
+}
+
+
+input userInput {
+  firstName: String!
+  lastName: String!
+  email: String!
+  date_of_birth: Date!
+  address: String!
+  mobile_number: String!
+  password: String!
+  gender: String!
+  blood_group: String!
+  profile_url: String
+  middle_name: String
+  display_name: String
+  work_email: String
+  work_phone: String
+  residence_phone: String
+  current_address: String
+}
+
+input loginData {
+  email: String!
+  password: String!
+}
+
+type LoginResponse {
+  token: String!
+  refreshToken: String
+  user: User
+}
+
+input UserFilter {
+  skip: Int
+  limit: Int
+  search: String
+  sortBy: String
+}
+
+input UserData {
+  firstName: String!
+  lastName: String!
+  date_of_birth: Date!
+  address: String!
+  mobile_number: String!
+  gender: String!
+  blood_group: String!
+  profile_url: String
+  middle_name: String
+  display_name: String
+  work_email: String
+  work_phone: String
+  residence_phone: String
+  current_address: String
+}
+
+input UserDatas {
+  user_id: String!
+  firstName: String
+  lastName: String
+  date_of_birth: Date
+  address: String
+  mobile_number: String
+  email:String!
+  gender: String!
+  blood_group: String!
+  profile_url: String
+  middle_name: String
+  display_name: String
+  work_email: String
+  work_phone: String
+  residence_phone: String
+  current_address: String
+}
+
+input passwordInput {
+  password: String!
+}
+
+input VerifyInput {
+  id: String!
+  token: String!
+  password: String!
+}
+
+input AdminUpdateInput {
+  activate: Boolean!
+  user_id: String!
+}
+
+input SingleUser {
+  user_id:String!
+}
+
+input organizationAdminInput {
+  organization_name: String
+  organization_type: String
+  organization_description: String
+  firstName: String
+  lastName: String
+  mobile_number: String
+  email: String
+  password: String
+}

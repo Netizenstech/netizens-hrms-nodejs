@@ -1,0 +1,422 @@
+scalar Date
+directive @isAuthenticated on FIELD_DEFINITION
+directive @hasRole(roles: [String]) on FIELD_DEFINITION
+directive @isOwner(type: String) on FIELD_DEFINITION
+directive @rateLimit(
+  max: Int
+  window: String
+  message: String
+  identityArgs: [String]
+  arrayLengthField: String
+) on FIELD_DEFINITION
+
+type Query {
+  Leaves(filter: LeaveFilter!): LeaveResponse @isAuthenticated
+}
+
+type Mutation {
+  createLeave(data: LeaveInput!): CreateUpdateLeaveResponse @isAuthenticated
+  updateLeave(data: LeaveUpdateData!): CreateUpdateLeaveResponse
+    @isAuthenticated
+  deleteLeave(data: LeaveDeleteData!): CreateUpdateLeaveResponse
+    @isAuthenticated
+  getLeaveById(data: LeaveByIdData!): LeaveListing @isAuthenticated
+  takeLeave(
+    data: LeaveTakeData!
+    addData: LeaveApprovalInputs
+  ): CreateUpdateLeaveResponse @isAuthenticated
+  cancelLeave(data: LeaveCancelData!): CreateUpdateLeaveResponse
+    @isAuthenticated
+  AcceptEmployeeLeave(data: LeaveApprovalInput): CreateUpdateLeaveResponse
+  getAllLeaveApprovals: [LeaveResponses]
+  getLeaveApprovalById(data: LeaveInputById!): LeaveResponses
+  createLeaveAccrual(data: LeaveAccrualInput!): CreateUpdateLeaveResponse
+  getLeaveAccrual: [LeavseAccrualResponse!]
+  createLeaveAccrualSuboption(
+    data: LeaveAccrualSuboptionInput!
+  ): CreateUpdateLeaveResponse
+  createHolidayWeekOff(data: HolidayWeekOffInput): CreateUpdateLeaveResponse
+  getHolidayWeekOff: [HolidayWeekOffResponse]
+  updateHolidayWeekOff(
+    data: HolidayWeekOffUpdateInput
+  ): CreateUpdateLeaveResponse
+  createLeaveApply(
+    data: LeaveApplyInput
+    addData: LeaveApplyNoticeDaysInput
+  ): CreateUpdateLeaveResponse
+  getLeaveApplyPlan: [LeaveApplyPlanResponse]
+  updateLeaveApplyPlan(
+    data: LeaveApplyUpdate
+    addData: LeaveApplyNoticeUpdate
+  ): CreateUpdateLeaveResponse
+  createLeaveRestriction(
+    data: LeaveRestrictionInput!
+  ): CreateUpdateLeaveResponse
+  getLeaveRestriction: [LeaveRestrictionResponse]
+  updateLeaveRestriction(
+    data: LeaveRestrictionUpdateInput!
+  ): CreateUpdateLeaveResponse
+}
+
+type Leave {
+  leave_id: String!
+  employee_id: String!
+  organization_id: String!
+  available_leaves: Float!
+  sick_leaves: Float!
+  casual_leaves: Float!
+  total_leaves_taken: Float!
+}
+
+type LeaveListing {
+  leave_id: String!
+  employee_id: String!
+  organization_id: String!
+  available_leaves: Float!
+  sick_leaves: Float!
+  casual_leaves: Float!
+  total_leaves_taken: Float!
+  Employee: EmployeeResponse
+}
+
+type CreateUpdateLeaveResponse {
+  message: String
+  status: String
+}
+
+type LeaveResponse {
+  count: Int
+  Leaves: [LeaveListing]
+}
+
+type LeaveResponses {
+  emp_leave_id: String!
+  approved_by_reporting_manager_id: String
+  approved_by_admin_id: String
+  is_approved_by_reporting_manager: Boolean
+  is_approved_by_admin: Boolean
+  last_approved_by: String
+  next_approved_by: String
+  is_approval: String
+  Employee: EmployeeResponse
+}
+type EmployeeResponse {
+  employee_name: String!
+  department: String!
+  reporting_manager_id: String!
+}
+
+type LeavseAccrualResponse {
+  how_emp_leave_calculated: String!
+  all_leaves_credited_as_joins: String!
+  is_earned_on_regular_intervals: String!
+  what_if_emp_joins_mid_of_year: String!
+  leave_accrual_prorate_based_on_joining: String!
+  leave_is_credited_based_on_month: String!
+  no_change_in_annual_quota: String!
+  what_if_emp_exits_mid_year: String!
+  leave_prorate_based_on_emp_exit_date: String!
+  leave_updated_when_emp_exit: String!
+  no_change_in_annual_quota_exit: String!
+  LeaveAccrualSuboptions: [LeaveAccrualSuboptionResponse]
+}
+
+type LeaveAccrualSuboptionResponse {
+  leave_accrual_id: String!
+  leave_accrual_annual_quota_happens_on: String
+  leave_accrual_annual_quota_happens_month: Int
+  joining_month_start: Int
+  joining_month_end: Int
+  allocate_leave_days: Float
+  exit_month_start: Int
+  exit_month_end: Int
+  allocate_leave_days_of_exit: Float
+}
+
+type HolidayWeekOffResponse {
+  holiday_adjoining_leave_option: Boolean
+  total_num_of_leaves: Float
+  adjoining_leave_days: String
+  is_selected_holidays: Int
+  not_consider_holiday_is_leave: Boolean
+  week_off_adjoining_leave_option: Boolean
+  total_num_of_leaves_for_week_off: Float
+  adjoining_leave_days_for_week_off: String
+  is_selected_week_off: Int
+  not_consider_week_off_is_leave: Boolean
+  sandwich_policy_across_leave_types: Boolean
+}
+
+type LeaveApplyPlanResponse {
+  apply_for_half_day_option: Boolean!
+  allow_emp_to_see_and_apply_leave: Boolean!
+  how_early_emp_apply_leave_option: Boolean!
+  leave_request_days: Float!
+  check_restriction_for_past_dated_leave: Boolean!
+  emp_leaves_past_days: Float!
+  not_allow_emp_past_dated_leaves: Boolean!
+  past_leave_month: String!
+  leave_reaquire_comment: Boolean!
+  leave_exceeds_days: Float!
+  LeaveNoticeDays: [LeaveApplyNoticePlanResponse]
+}
+type LeaveApplyNoticePlanResponse {
+  days_for_more_duration: Float
+  leave_notice_days: Float
+  working_days: Float
+}
+
+type LeaveRestrictionResponse {
+  joinee_emp_apply_leave_after_probation: Boolean
+  probation_days: Float
+  joinee_emp_apply_leave_after_joining: Boolean
+  joining_days: Float
+  not_allow_emp_to_apply_leave_during_probation: Boolean
+  allow_days: Float
+  is_there_limit_of_consecutive_leave_can_be_taken: Boolean
+  max_consecutive_days: Float
+  is_there_limit_on_leave_balance_can_be_availed_in_month: Boolean
+  avail_max_days: Float
+  does_emp_in_notice_can_apply_leave: Boolean
+  apply_from_available_leaves: Float
+  can_manager_override_leave_restricton: Boolean
+  min_gap_between_two_leaves: Boolean
+  min_calendar_days: Float
+  not_allow_more_than_leave_request_in_calendar_year: Boolean
+  leave_request_calendar_year: Float
+  not_allow_more_than_leave_request_in_calendar_month: Boolean
+  leave_request_calendar_month: Float
+  not_allow_more_than_leave_request_in_entire_tenure: Boolean
+  leave_request_tenure: Float
+  restrict_emp_from_applying_leave: Boolean
+  restrict_emp_applying_leave_month: Float
+  leave_cannot_be_taken_along_with: Boolean
+  leave_search_type: String
+  leave_is_not_availabe_when_there_is_balance: Boolean
+  leave_balance_search_type: String
+}
+
+input LeaveInputById {
+  employee_id: String!
+}
+
+input LeaveInput {
+  employee_id: String!
+  organization_id: String!
+  available_leaves: Float!
+  sick_leaves: Float!
+  casual_leaves: Float!
+}
+
+input LeaveFilter {
+  skip: Int
+  limit: Int
+  search: String
+  sortBy: String
+}
+
+input LeaveUpdateData {
+  leave_id: String!
+  available_leaves: Float!
+  sick_leaves: Float!
+  casual_leaves: Float!
+  total_leaves_taken: Float!
+}
+
+input LeaveDeleteData {
+  leave_id: String!
+}
+
+input LeaveByIdData {
+  employee_id: String!
+  organization_id: String!
+}
+
+input LeaveTakeData {
+  employee_id: String!
+  organization_id: String!
+  leave_type: String!
+  no_of_day: Float!
+}
+
+input LeaveCancelData {
+  employee_id: String!
+  organization_id: String!
+  leave_type: String!
+  no_of_day: Float!
+}
+
+input LeaveApprovalInput {
+  emp_leave_id: String!
+  is_approval: Int!
+}
+
+input LeaveApprovalInputs {
+  leave_id: String!
+  employee_id: String!
+  organization_leave_type_id: String!
+  approved_by_reporting_manager_id: String
+  approved_by_admin_id: String
+  is_approved_by_reporting_manager: Boolean
+  is_approved_by_admin: Boolean
+  last_approved_by: String
+  next_approved_by: String
+  is_approval: Int!
+}
+
+input LeaveAccrualInput {
+  how_emp_leave_calculated: String!
+  all_leaves_credited_as_joins: String!
+  is_earned_on_regular_intervals: String!
+  what_if_emp_joins_mid_of_year: String!
+  leave_accrual_prorate_based_on_joining: String!
+  leave_is_credited_based_on_month: String!
+  no_change_in_annual_quota: String!
+  what_if_emp_exits_mid_year: String!
+  leave_prorate_based_on_emp_exit_date: String!
+  leave_updated_when_emp_exit: String!
+  no_change_in_annual_quota_exit: String!
+}
+input LeaveAccrualSuboptionInput {
+  leave_accrual_id: String!
+  leave_accrual_annual_quota_happens_on: String
+  leave_accrual_annual_quota_happens_month: Int
+  joining_month_start: Int
+  joining_month_end: Int
+  allocate_leave_days: Float
+  exit_month_start: Int
+  exit_month_end: Int
+  allocate_leave_days_of_exit: Float
+}
+
+input AccrualInput {
+  all_leaves_credited_as_joins: Boolean!
+}
+input HolidayWeekOffInput {
+  holiday_adjoining_leave_option: Boolean!
+  total_num_of_leaves: Float!
+  adjoining_leave_days: String!
+  is_selected_holidays: Int
+  not_consider_holiday_is_leave: Boolean
+  week_off_adjoining_leave_option: Boolean!
+  total_num_of_leaves_for_week_off: Float!
+  adjoining_leave_days_for_week_off: String!
+  is_selected_week_off: Int
+  not_consider_week_off_is_leave: Boolean
+  sandwich_policy_across_leave_types: Boolean!
+}
+input HolidayWeekOffUpdateInput {
+  holiday_weekoff_id: String!
+  holiday_adjoining_leave_option: Boolean!
+  total_num_of_leaves: Float!
+  adjoining_leave_days: String!
+  is_selected_holidays: Int
+  not_consider_holiday_is_leave: Boolean
+  week_off_adjoining_leave_option: Boolean!
+  total_num_of_leaves_for_week_off: Float!
+  adjoining_leave_days_for_week_off: String!
+  is_selected_week_off: Int
+  not_consider_week_off_is_leave: Boolean
+  sandwich_policy_across_leave_types: Boolean!
+}
+
+input LeaveApplyInput {
+  apply_for_half_day_option: Boolean!
+  allow_emp_to_see_and_apply_leave: Boolean!
+  how_early_emp_apply_leave_option: Boolean!
+  leave_request_days: Float!
+  check_restriction_for_past_dated_leave: Boolean!
+  emp_leaves_past_days: Float!
+  not_allow_emp_past_dated_leaves: Boolean!
+  past_leave_month: String!
+  leave_reaquire_comment: Boolean!
+  leave_exceeds_days: Float!
+}
+
+input LeaveApplyNoticeDaysInput {
+  days_for_more_duration: Float
+  leave_notice_days: Float
+  working_days: Float
+}
+
+input LeaveApplyUpdate {
+  leave_apply_id: String!
+  apply_for_half_day_option: Boolean!
+  allow_emp_to_see_and_apply_leave: Boolean!
+  how_early_emp_apply_leave_option: Boolean!
+  leave_request_days: Float!
+  check_restriction_for_past_dated_leave: Boolean!
+  emp_leaves_past_days: Float!
+  not_allow_emp_past_dated_leaves: Boolean!
+  past_leave_month: String!
+  leave_reaquire_comment: Boolean!
+  leave_exceeds_days: Float!
+}
+
+input LeaveApplyNoticeUpdate {
+  leave_notice_days_id: String!
+  days_for_more_duration: Float
+  leave_notice_days: Float
+  working_days: Float
+}
+
+input LeaveRestrictionInput {
+  joinee_emp_apply_leave_after_probation: Boolean
+  probation_days: Float
+  joinee_emp_apply_leave_after_joining: Boolean
+  joining_days: Float
+  not_allow_emp_to_apply_leave_during_probation: Boolean
+  allow_days: Float
+  is_there_limit_of_consecutive_leave_can_be_taken: Boolean
+  max_consecutive_days: Float
+  is_there_limit_on_leave_balance_can_be_availed_in_month: Boolean
+  avail_max_days: Float
+  does_emp_in_notice_can_apply_leave: Boolean
+  apply_from_available_leaves: Float
+  can_manager_override_leave_restricton: Boolean
+  min_gap_between_two_leaves: Boolean
+  min_calendar_days: Float
+  not_allow_more_than_leave_request_in_calendar_year: Boolean
+  leave_request_calendar_year: Float
+  not_allow_more_than_leave_request_in_calendar_month: Boolean
+  leave_request_calendar_month: Float
+  not_allow_more_than_leave_request_in_entire_tenure: Boolean
+  leave_request_tenure: Float
+  restrict_emp_from_applying_leave: Boolean
+  restrict_emp_applying_leave_month: Float
+  leave_cannot_be_taken_along_with: Boolean
+  leave_search_type: String
+  leave_is_not_availabe_when_there_is_balance: Boolean
+  leave_balance_search_type: String
+}
+
+input LeaveRestrictionUpdateInput {
+  leave_restriction_id: String!
+  joinee_emp_apply_leave_after_probation: Boolean
+  probation_days: Float
+  joinee_emp_apply_leave_after_joining: Boolean
+  joining_days: Float
+  not_allow_emp_to_apply_leave_during_probation: Boolean
+  allow_days: Float
+  is_there_limit_of_consecutive_leave_can_be_taken: Boolean
+  max_consecutive_days: Float
+  is_there_limit_on_leave_balance_can_be_availed_in_month: Boolean
+  avail_max_days: Float
+  does_emp_in_notice_can_apply_leave: Boolean
+  apply_from_available_leaves: Float
+  can_manager_override_leave_restricton: Boolean
+  min_gap_between_two_leaves: Boolean
+  min_calendar_days: Float
+  not_allow_more_than_leave_request_in_calendar_year: Boolean
+  leave_request_calendar_year: Float
+  not_allow_more_than_leave_request_in_calendar_month: Boolean
+  leave_request_calendar_month: Float
+  not_allow_more_than_leave_request_in_entire_tenure: Boolean
+  leave_request_tenure: Float
+  restrict_emp_from_applying_leave: Boolean
+  restrict_emp_applying_leave_month: Float
+  leave_cannot_be_taken_along_with: Boolean
+  leave_search_type: String
+  leave_is_not_availabe_when_there_is_balance: Boolean
+  leave_balance_search_type: String
+}
